@@ -1,11 +1,26 @@
-import { KeyboardAvoidingView, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Alert, KeyboardAvoidingView, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
-
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
+
+  const handleLogin = () => {
+    const user = { email: email, password: password };
+    axios.post('http://192.168.8.194:8000/login', user).then((res) => {
+      console.log(res);
+      const token = res.data.token;
+      AsyncStorage.setItem("authToken", token);
+      navigation.navigate("Home")
+    }).catch((err) => {
+      console.log(err);
+      Alert.alert("login error")
+    });
+  }
+
   return (
     <View style={{ flex: 1, backgroundColor: "while", padding: 18, alignItems: "center" }}>
       <KeyboardAvoidingView>
@@ -30,7 +45,7 @@ const LoginScreen = () => {
             </Text>
             <TextInput secureTextEntry={true} value={password} onChangeText={(text) => setPassword(text)} style={{ fontSize: 18, borderBottomColor: "gray", borderBottomWidth: 1, marginVertical: 10, width: 300 }} placeholderTextColor={"black"} placeholder='enter your Password' />
           </View>
-          <Pressable style={{ width: 200, backgroundColor: "#4A55A2", padding: 15, marginTop: 50, marginLeft: "auto", marginRight: "auto", borderRadius: 6 }}>
+          <Pressable onPress={handleLogin} style={{ width: 200, backgroundColor: "#4A55A2", padding: 15, marginTop: 50, marginLeft: "auto", marginRight: "auto", borderRadius: 6 }}>
             <Text style={{ color: "white", fontSize: 16, fontWeight: "bold", textAlign: "center" }}>
               Login
             </Text>

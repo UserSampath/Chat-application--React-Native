@@ -1,8 +1,11 @@
-import { KeyboardAvoidingView, StyleSheet, Text, View } from 'react-native'
+import { Alert, KeyboardAvoidingView, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import { TextInput } from 'react-native'
 import { Pressable } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+
+
 
 export default function RegisterScreen() {
   const [email, setEmail] = useState('');
@@ -11,6 +14,23 @@ export default function RegisterScreen() {
   const [image, setImage] = useState('');
 
   const navigation = useNavigation();
+
+  const handelRegister = () => {
+    const user = { name: name, email: email, password: password, image: image }
+    //send a post request 
+    axios.post("http://192.168.8.194:8000/register", user).then((response) => {
+      console.log(response.data.message);
+      Alert.alert(response.data.message,"Success")
+      setName('');
+      setPassword('');
+      setEmail('');
+      setImage('');
+    }).catch((error) => { 
+      Alert.alert("error","ddd")
+      console.log(error);
+    });
+  }
+
   return (
     <View style={{ flex: 1, backgroundColor: "while", padding: 18, alignItems: "center" }}>
       <KeyboardAvoidingView>
@@ -47,7 +67,7 @@ export default function RegisterScreen() {
             </Text>
             <TextInput value={image} onChangeText={(text) => setImage(text)} style={{ fontSize: 18, borderBottomColor: "gray", borderBottomWidth: 1, marginVertical: 10, width: 300 }} placeholderTextColor={"black"} placeholder='enter your image' />
           </View>
-          <Pressable style={{ width: 200, backgroundColor: "#4A55A2", padding: 15, marginTop: 50, marginLeft: "auto", marginRight: "auto", borderRadius: 6 }}>
+          <Pressable onPress={handelRegister} style={{ width: 200, backgroundColor: "#4A55A2", padding: 15, marginTop: 50, marginLeft: "auto", marginRight: "auto", borderRadius: 6 }}>
             <Text style={{ color: "white", fontSize: 16, fontWeight: "bold", textAlign: "center" }}>
               Register
             </Text>
