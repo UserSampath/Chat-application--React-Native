@@ -1,5 +1,5 @@
 import { Alert, KeyboardAvoidingView, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -7,17 +7,33 @@ const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const token = await AsyncStorage.getItem("authToken");
+        if (token) {
+          navigation.navigate("Home");
+        } else {
+          //token not found
 
+        }
+      } catch (err) {
+        console.log(err);
+      }
+
+    }
+    checkLoginStatus();
+  }, [])
   const handleLogin = () => {
     const user = { email: email, password: password };
-    axios.post('http://192.168.8.194:8000/login', user).then((res) => {
+    axios.post('http://192.168.8.104:8000/login', user).then((res) => {
       console.log(res);
       const token = res.data.token;
       AsyncStorage.setItem("authToken", token);
-      navigation.navigate("Home")
+      navigation.replace("Home")
     }).catch((err) => {
       console.log(err);
-      Alert.alert("login error")
+      Alert.alert("login error", err.message);
     });
   }
 
@@ -50,7 +66,7 @@ const LoginScreen = () => {
               Login
             </Text>
           </Pressable>
-          <Pressable style={{ marginTop: 20 }} onPress={()=>navigation.navigate("Register")}>
+          <Pressable style={{ marginTop: 20 }} onPress={() => navigation.navigate("Register")}>
             <Text style={{ textAlign: "center", color: "gray", fontSize: 16 }}>
               Dont have an account ? Sign Up
             </Text>

@@ -16,7 +16,7 @@ app.use(passport.initialize());
 const jwt = require('jsonwebtoken');
 
 
-mongoose.connect("mongodb+srv://sampath:sampath@cluster0.vtnflrx.mongodb.net/", {
+mongoose.connect("mongodb://localhost:27017", {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => {
@@ -36,6 +36,7 @@ const Message = require("./models/message")
 //end points for registering users
 app.post("/register", (req, res) => {
     const { name, email, password, image } = req.body;
+    console.log("Registering user " + name)
     //create a new user object
     const newUser = new User({ name, email, password, image })
     //save the user to the db
@@ -59,9 +60,11 @@ const createToken = (userId) => {
 
 //endpoint for login
 app.post("/login", (req, res) => {
-    const { email, passport } = req.body;
+    console.log()
+    const { email, password } = req.body;
+    console.log(email, password)
     //check imaail and password provided
-    if (!email || !passport) {
+    if (!email || !password) {
         return res.status(404).json({ message: 'email and password are required' });
     }
     User.findOne({ email: email }).then((user) => {
@@ -79,3 +82,23 @@ app.post("/login", (req, res) => {
     })
 
 })
+
+//endpoit to access all the user except the current user
+
+app.get("/users/:userId", (req, res) => {
+    const loggedInUserId = req.params.userId;
+    console.log(loggedInUserId)
+    User.find({ _id: { $ne: loggedInUserId } }).then((users) => {
+        res.status(200).json(users)
+    }).catch((err) => {
+        console.log(err);
+        res.status(500).json({ message: "error retrieving users " })
+    })
+})
+
+
+//endpoint to send a request to the user
+
+app.post("/friend-request", async (req, res) => {
+    
+ })
