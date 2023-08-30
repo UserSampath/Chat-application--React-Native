@@ -10,7 +10,7 @@ import axios from 'axios';
 import User from '../components/User';
 const HomeScreen = () => {
   const navigation = useNavigation();
-  const { userId, setUserId } = useContext(UserType)
+  const { userId, setUserId } = useContext(UserType);
   const [users, setUsers] = useState([])
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -20,7 +20,7 @@ const HomeScreen = () => {
       ),
       headerRight: () => (
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-          <Ionicons name="chatbox-ellipses-outline" size={24} color="black" />
+          <Ionicons onPress={()=>navigation.navigate("Chats")} name="chatbox-ellipses-outline" size={24} color="black" />
           <MaterialIcons onPress={()=>navigation.navigate("Friends")} name="people-outline" size={24} color="black" />
         </View>
       )

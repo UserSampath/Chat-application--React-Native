@@ -158,3 +158,17 @@ app.post("/friend-request/accept", async (req, res) => {
     }
    
 })
+
+//endpoint to acces all the friend of the login user
+app.get("/accepted-friends/:userId", async (req, res) => {
+    try { 
+        const { userId } = req.params;
+        console.log(userId);
+        const user = await User.findById(userId).populate("friends","name email image");
+        const acceptedFriends = user.friends;
+        res.json(acceptedFriends);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "internal server error" })
+    }
+})
