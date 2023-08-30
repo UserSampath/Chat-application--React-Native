@@ -118,23 +118,43 @@ app.post("/friend-request", async (req, res) => {
 
 //endpoit to show all the friend requests of peticler user
 
-app.get("/friend-request/:userId",async (req, res) => {
+app.get("/friend-request/:userId", async (req, res) => {
     try {
         const { userId } = req.params;
-        const user = await User.findById(userId).populate("friendRequests","name email image").lean();
+        const user = await User.findById(userId).populate("friendRequests", "name email image").lean();
         const friendRequests = user.friendRequests;
-        
+
         res.json(friendRequests);
-     } catch (err) {
+    } catch (err) {
         console.log(err);
-res.status(500).json({message:"internal server error"})
+        res.status(500).json({ message: "internal server error" })
     }
 })
 
 
 //endpoint to accept a request of a person
 
-app.post("/friend-request/accept", async (req, res) => { 
-    const { senderId, recepientId } = req.body;
-    
+app.post("/friend-request/accept", async (req, res) => {
+
+    try {
+        const { senderId, recepientId } = req.body;
+
+        const sender = await User.findById(senderId);
+        const recepient = await User.findById(recepientId);
+
+        sender.friends.push(recepientId);
+        recepient.friends.push(senderId);
+
+        recepient.friendRequests = recepient.friendRequests.filter((request) => request.toString() !== senderId.toString())
+        sender.sentFriendRequests = sender.sentFriendRequests.filter((request) => request.toString() !== recepientId.toString())
+
+        await sender.save();
+        await recepient.save();
+
+        res.status(200).json({ message: "friend request accepted" })
+    } catch (err) {
+        res.status(500).json({message:"internal error"})
+        console.log(err);
+    }
+   
 })
