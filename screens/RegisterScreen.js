@@ -18,7 +18,7 @@ export default function RegisterScreen() {
   const handelRegister = () => {
     const user = { name: name, email: email, password: password, image: image }
     //send a post request 
-    axios.post("http://192.168.8.194:8000/register", user).then((response) => {
+    axios.post("http://192.168.8.103:8000/register", user).then((response) => {
       console.log(response.data.message);
       Alert.alert(response.data.message,"Success")
       setName('');
