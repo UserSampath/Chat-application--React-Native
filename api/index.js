@@ -186,9 +186,9 @@ const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'files/');
     },
-    filename: function (req, file, cb) { 
+    filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null,uniqueSuffix+'-'+file.originalname);
+        cb(null, uniqueSuffix + '-' + file.originalname);
     }
 })
 
@@ -197,26 +197,27 @@ const upload = multer({ storage: storage });
 app.post("/messages",
     upload.single('imageFile'),
     async (req, res) => {
-    try {
-        const { senderId, recepientId, messageType, messageText } = req.body;
+        try {
+            const { senderId, recepientId, messageType, messageText } = req.body;
+            console.log(messageText, "messageText");
 
-        const newMessage = new Message({ senderId, recepientId, messageType, messageText, timeStamp: new Date(), imageUrl: messageType === "image" });
-
-        res.status(200).json({ message: "message sent successfully " });
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ message: "internal server error" })
-    }
-})
+            const newMessage = new Message({ senderId, recepientId, messageType, message: messageText, timeStamp: new Date(), imageUrl: messageType === "image" ? request.file.path : null, });
+            await newMessage.save();
+            res.status(200).json({ message: "message sent successfully " });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({ message: "internal server error" })
+        }
+    })
 
 
 //endpoint to get the user information to design the chat room header
 
-app.get("/user/:userId",async (req, res) => { 
-    try { 
-        const { userId } = req.params; 
+app.get("/user/:userId", async (req, res) => {
+    try {
+        const { userId } = req.params;
         // fetch user data from user id
-        const recepientId= await User.findById(userId); 
+        const recepientId = await User.findById(userId);
         res.json(recepientId);
 
     } catch (err) {
@@ -229,21 +230,21 @@ app.get("/user/:userId",async (req, res) => {
 
 //endpoint to fetch the messages between two users in the chat room
 
-app.get("/messages/:senderId/:recepientId", async (req, res) => { 
+app.get("/messages/:senderId/:recepientId", async (req, res) => {
     try {
-        
+
         const { senderId, recepientId } = req.params;
 
-        const messages = await Message.findOne({
+        const messages = await Message.find({
             $or: [
                 { senderId: senderId, recepientId: recepientId },
-                { senderId:recepientId, recepientId: senderId}
+                { senderId: recepientId, recepientId: senderId }
             ]
-        }).populate("senderId","_id name")
+        }).populate("senderId", "_id name")
 
         res.json(messages);
 
-    } catch (err) { 
+    } catch (err) {
         console.log(err);
         res.status(500).json({ message: "internal server error" })
 

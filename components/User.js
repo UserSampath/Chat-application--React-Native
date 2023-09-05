@@ -8,7 +8,7 @@ const User = ({ item }) => {
     const [requestSent, setRequestSent] = useState(false);
     const sendFriendRequest = async (currentUserId, selectedUserId) => {
         try {
-            const response = await fetch("http://192.168.8.103:8000/friend-request", {
+            const response = await fetch("http://192.168.8.194:8000/friend-request", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

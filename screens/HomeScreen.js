@@ -8,6 +8,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwtDecode from 'jwt-decode';
 import axios from 'axios';
 import User from '../components/User';
+
+
 const HomeScreen = () => {
   const navigation = useNavigation();
   const { userId, setUserId } = useContext(UserType);
@@ -20,8 +22,8 @@ const HomeScreen = () => {
       ),
       headerRight: () => (
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-          <Ionicons onPress={()=>navigation.navigate("Chats")} name="chatbox-ellipses-outline" size={24} color="black" />
-          <MaterialIcons onPress={()=>navigation.navigate("Friends")} name="people-outline" size={24} color="black" />
+          <Ionicons onPress={() => navigation.navigate("Chats")} name="chatbox-ellipses-outline" size={24} color="black" />
+          <MaterialIcons onPress={() => navigation.navigate("Friends")} name="people-outline" size={24} color="black" />
         </View>
       )
     })
@@ -34,7 +36,7 @@ const HomeScreen = () => {
       const userId = decodedToken.userId;
       setUserId(userId);
 
-      axios.get(`http://192.168.8.103:8000/users/${userId}`).then((response) => {
+      axios.get(`http://192.168.8.194:8000/users/${userId}`).then((response) => {
         setUsers(response.data)
       }).catch((error) => {
         console.log("users", error);
@@ -42,11 +44,10 @@ const HomeScreen = () => {
     }
     fetchUsers();
   }, [])
-  
   console.log("users", users)
   return (
     <View>
-      <View style={{padding:10}}>
+      <View style={{ padding: 10 }}>
         {users && users.map((item, index) => (
           <User key={index} item={item} />
         ))}

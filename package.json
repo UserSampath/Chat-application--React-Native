@@ -8,12 +8,21 @@
     "ios": "expo start --ios",
     "web": "expo start --web"
   },
+  "plugins": [
+    [
+      "expo-image-picker",
+      {
+        "photosPermission": "The app accesses your photos to let you share them with your friends."
+      }
+    ]
+  ],
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.18.2",
     "@react-navigation/native": "^6.1.7",
     "@react-navigation/native-stack": "^6.9.13",
     "axios": "^1.4.0",
     "expo": "~49.0.8",
+    "expo-image-picker": "~14.3.2",
     "expo-status-bar": "~1.6.0",
     "jwt-decode": "^3.1.2",
     "react": "18.2.0",
