@@ -148,6 +148,23 @@ const ChatMessagesScreen = () => {
                             </Pressable>
                         )
                     }
+                    if (item.messageType === "image") {
+                        const baseUrl = "/Users/SAMPATH/Desktop/appp/ChatApp/api/files/";
+                        const imageUrl = item.imageUrl;
+                        const filename = imageUrl.split("/").pop();
+                        const source = { uri: baseUrl + "/" + filename };
+
+                        return (
+                            <Pressable key={index} style={[item?.senderId?._id === userId ? { alignSelf: "flex-end", backgroundColor: "#DCF8C6", padding: 8, maxWidth: "60%", borderRadius: 7, margin: 10 } : { alignSelf: "flex-start", backgroundColor: "white", padding: 8, borderRadius: 8, margin: 10, maxWidth: "60% " }]}>
+                                <View>
+                                    <Image source={source} style={{ width: 200, height: 200, borderRadius: 7 }} />
+                                    <Text style={{ textAlign: "right", fontSize: 9, position: "absolute", right: 10, color: "white", marginTop: 5, bottom: 7 }}>
+                                        {formatTime(item?.timeStamp)}
+                                    </Text>
+                                </View>
+                            </Pressable>
+                        )
+                    }
                 })}
             </ScrollView>
 
