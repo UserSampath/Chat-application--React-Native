@@ -36,7 +36,7 @@ const HomeScreen = () => {
       const userId = decodedToken.userId;
       setUserId(userId);
 
-      axios.get(`http://192.168.8.194:8000/users/${userId}`).then((response) => {
+      axios.get(`http://192.168.8.100:8000/users/${userId}`).then((response) => {
         setUsers(response.data)
       }).catch((error) => {
         console.log("users", error);

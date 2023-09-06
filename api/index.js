@@ -250,3 +250,21 @@ app.get("/messages/:senderId/:recepientId", async (req, res) => {
 
     }
 })
+
+//endpoint to delete messages 
+app.post("/deleteMessages", async (req, res) => {
+    try {
+        const { messages } = req.body;
+        if (!Array.isArray(messages) || messages.length == 0) {
+            return res.status(400).json({ message: "invalid request body" });
+        }
+
+        await Message.deleteMany({ _id: { $in: messages } })
+
+        res.json({ message: "messages delete successfully" });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "internal server error" })
+
+    }
+})
